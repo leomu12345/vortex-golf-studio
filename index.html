@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>VORTEX Golf Studio — 3D / VR</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #d7dbdf; overflow: hidden; font-family: -apple-system, Helvetica, Arial, sans-serif; }
+  #view { display: block; width: 100vw; height: 100vh; }
+  #bar {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; gap: 8px; padding: 8px 10px; border-radius: 14px;
+    background: rgba(20,22,26,0.72); backdrop-filter: blur(8px); z-index: 10;
+  }
+  #bar button {
+    min-width: 36px; height: 36px; border: 0; border-radius: 9px; cursor: pointer;
+    background: #2c2f35; color: #fff; font-size: 14px; font-weight: 600;
+  }
+  #bar button:hover { background: #ff6a13; }
+  #bar button.wide { padding: 0 12px; background: #3a3d42; }
+  #label {
+    position: fixed; left: 16px; top: 14px; z-index: 10; color: #1b1d20;
+    background: rgba(255,255,255,0.78); padding: 7px 12px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; letter-spacing: .2px;
+  }
+  #hint { position: fixed; right: 16px; top: 14px; z-index: 10; color: #41454b;
+    background: rgba(255,255,255,0.7); padding: 6px 10px; border-radius: 9px; font-size: 12px; }
+  #VRButton { border-radius: 9px !important; }
+</style>
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="label">loading…</div>
+  <div id="hint">drag to orbit · scroll to zoom · numbers = preset views</div>
+  <div id="bar"></div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

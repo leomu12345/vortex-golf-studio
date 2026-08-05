@@ -1,0 +1,20 @@
+{
+  "name": "golf-sim",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "render": "node render.mjs",
+    "enhance": "python3 enhance.py"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^22.15.0",
+    "serve": "^14.2.6",
+    "three": "^0.160.0"
+  }
+}
