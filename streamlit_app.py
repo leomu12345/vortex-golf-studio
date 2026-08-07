@@ -51,13 +51,6 @@ st.caption(
     "Client deliverable: an interactive 3D/VR walkthrough, AI-photoreal renders, and an "
     "exportable CAD model, all generated from one procedural Three.js scene."
 )
-st.info(
-    "**One Three.js scene, three outputs.** The room, simulator bays, and every prop are built "
-    "procedurally in code (`src/*.js`) — that single scene is what you can orbit live below, what "
-    "gets exported to a CAD-interchange `.glb`, and what an AI image pass turns into photoreal "
-    "client-facing renders. Nothing here is hand-modeled per view."
-)
-
 tab_3d, tab_photos, tab_cad, tab_draft = st.tabs(
     ["🕹️ Interactive 3D / VR", "📷 Photoreal renders", "📐 CAD model", "🧱 Raw 3D views"]
 )
@@ -66,7 +59,9 @@ with tab_3d:
     st.subheader("Live, interactive — drag to orbit, scroll to zoom, VR button if your device supports it")
     st.caption(
         f"This is the real app running live from GitHub Pages ([open full-screen]({LIVE_VIEWER_URL})) — "
-        "not a screenshot or video."
+        "not a screenshot or video. It loads Three.js from a CDN and builds the scene client-side, so "
+        "give it a few seconds on first load; if it's still stuck on \"loading…\" after ~15s, use the "
+        "full-screen link above instead."
     )
     components.html(
         f'<iframe src="{LIVE_VIEWER_URL}" '
@@ -122,3 +117,6 @@ with tab_draft:
         caption = DRAFT_CAPTIONS[i] if i < len(DRAFT_CAPTIONS) else f.stem
         with cols[i % 2]:
             st.image(str(f), caption=caption, use_container_width=True)
+
+st.divider()
+st.caption("Project made by Leo Mu")
