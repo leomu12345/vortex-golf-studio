@@ -5,10 +5,17 @@ The actual deliverable is a self-contained Three.js/WebXR app (index.html +
 src/*.js, CDN-loaded Three.js, no build step, no backend) that also lives in
 this repo and is hosted separately on GitHub Pages -- that's what gives a
 real interactive orbit view *and* a working VR button, neither of which
-Streamlit can render natively. This page wraps that live viewer in an
-iframe alongside the AI-photoreal render gallery, the raw high-res CAD
-views, and a CAD (.glb) download, so the whole deliverable is reachable
-from one link.
+Streamlit can render natively.
+
+This page used to embed that viewer directly in an iframe. Dropped that:
+Chrome (and other browsers, in some configurations) refuses to create a
+WebGL context for third-party iframed content -- confirmed by reproducing
+"Error creating WebGL context" even in a plain, unsandboxed cross-origin
+iframe with no Streamlit involved at all. That's a browser security
+restriction, not something fixable from either app's code. Instead, this
+page shows a preview and launches the real viewer in a new tab -- a
+top-level page load, which has none of that restriction and has been
+reliable in every test.
 """
 
 from __future__ import annotations
@@ -16,7 +23,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(page_title="VORTEX Golf Studio", page_icon="⛳", layout="wide")
 
@@ -58,17 +64,26 @@ tab_3d, tab_photos, tab_cad, tab_draft = st.tabs(
 with tab_3d:
     st.subheader("Live, interactive — drag to orbit, scroll to zoom, VR button if your device supports it")
     st.caption(
-        f"This is the real app running live from GitHub Pages ([open full-screen]({LIVE_VIEWER_URL})) — "
-        "not a screenshot or video. It loads Three.js from a CDN and builds the scene client-side, so "
-        "give it a few seconds on first load; if it's still stuck on \"loading…\" after ~15s, use the "
-        "full-screen link above instead."
+        "Runs live from GitHub Pages, not a screenshot or video — opens in a new tab because browsers "
+        "block WebGL for third-party embedded iframes (a security restriction, not a limitation of "
+        "this app)."
     )
-    components.html(
-        f'<iframe src="{LIVE_VIEWER_URL}" '
-        'style="width:100%;height:750px;border:0;border-radius:12px;" '
-        'allow="xr-spatial-tracking; fullscreen" allowfullscreen></iframe>',
-        height=770,
-    )
+    col_preview, col_launch = st.columns([2, 1])
+    with col_preview:
+        preview = PHOTOREAL_DIR / "view-01.png"
+        if preview.is_file():
+            st.image(str(preview), use_container_width=True)
+    with col_launch:
+        st.markdown(
+            f'<a href="{LIVE_VIEWER_URL}" target="_blank" rel="noopener" style="'
+            "display:flex; align-items:center; justify-content:center; text-align:center; "
+            "height:100%; min-height:200px; background:#ff6a13; color:#fff; font-weight:700; "
+            'font-size:1.1rem; border-radius:12px; text-decoration:none; padding:24px;">'
+            "🕹️ Launch interactive<br/>3D / VR viewer<br/><span style=\"font-weight:400; "
+            'font-size:0.85rem; opacity:0.9;">opens in a new tab ↗</span></a>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Drag to orbit · scroll to zoom · VR button if your device supports it.")
 
 with tab_photos:
     st.subheader("AI-photoreal renders")
