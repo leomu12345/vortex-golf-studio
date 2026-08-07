@@ -204,7 +204,7 @@ with tab_3d:
     st.caption(T["live_caption"])
     col_preview, col_launch = st.columns([2, 1])
     with col_preview:
-        preview = PHOTOREAL_DIR / "view-01.png"
+        preview = PHOTOREAL_DIR / "view-01.jpg"
         if preview.is_file():
             st.image(str(preview), use_container_width=True)
     with col_launch:
@@ -221,7 +221,7 @@ with tab_3d:
 with tab_photos:
     st.subheader(T["photos_subheader"])
     st.caption(T["photos_caption"])
-    files = sorted(PHOTOREAL_DIR.glob("view-*.png"))
+    files = sorted(PHOTOREAL_DIR.glob("view-*.jpg"))
     captions = T["photoreal_captions"]
     cols = st.columns(2)
     for i, f in enumerate(files):
@@ -249,7 +249,7 @@ with tab_cad:
 with tab_draft:
     st.subheader(T["draft_subheader"])
     st.caption(T["draft_caption"])
-    files = sorted(DRAFT_DIR.glob("view-*.png"))
+    files = sorted(DRAFT_DIR.glob("view-*.jpg"))
     captions = T["draft_captions"]
     cols = st.columns(2)
     for i, f in enumerate(files):
