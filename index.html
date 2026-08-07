@@ -35,6 +35,24 @@
   <div id="hint">drag to orbit · scroll to zoom · numbers = preset views</div>
   <div id="bar"></div>
 
+  <script>
+    // Surface any load/runtime failure directly on the page instead of
+    // leaving the "loading…" label frozen forever with no clue why --
+    // this view is sometimes embedded in a nested cross-origin iframe
+    // (e.g. a Streamlit component), where the browser devtools console
+    // for this specific frame isn't obvious to reach.
+    function showFatal(msg) {
+      var label = document.getElementById('label');
+      if (label) { label.textContent = '⚠️ ' + msg; label.style.background = 'rgba(255,90,70,0.92)'; label.style.color = '#fff'; }
+    }
+    window.addEventListener('error', function (e) {
+      showFatal((e.message || 'script error') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : ''));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      var reason = e.reason;
+      showFatal(reason && reason.message ? reason.message : String(reason));
+    });
+  </script>
   <script type="importmap">
   {
     "imports": {

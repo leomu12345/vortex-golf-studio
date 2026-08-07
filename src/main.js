@@ -25,9 +25,19 @@ renderer.xr.enabled = true;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xe8e3da); // warm light grey
 
-// PBR environment for soft reflections (mirrors, metal, glass)
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+// PBR environment for soft reflections (mirrors, metal, glass). Some
+// embedding contexts (a nested cross-origin iframe with a degraded/
+// software WebGL context) can fail this GPU render-to-texture pass --
+// that's not worth losing the whole scene over, so fall back to no
+// environment map rather than letting it throw and abort everything
+// below (which previously left the page stuck on "loading…" with no
+// visible cause).
+try {
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+} catch (e) {
+  console.warn('PMREM environment setup failed, continuing without it:', e);
+}
 
 // ---------------- Lights (bright + warm workshop feel) ----------------
 scene.add(new THREE.HemisphereLight(0xfff6ea, 0x9a9690, 0.6));
@@ -108,7 +118,15 @@ function makeUI() {
     a.download = 'vortex-golf-studio.glb'; a.click();
   });
   bar.appendChild(exp);
-  document.body.appendChild(VRButton.createButton(renderer));
+  // WebXR (navigator.xr) access is unreliable inside a nested cross-origin
+  // iframe -- it can throw synchronously in some embedding contexts. VR is
+  // a bonus, not the core deliverable, so don't let it take the whole page
+  // down if it fails.
+  try {
+    document.body.appendChild(VRButton.createButton(renderer));
+  } catch (e) {
+    console.warn('VRButton unavailable, continuing without it:', e);
+  }
 }
 makeUI();
 
